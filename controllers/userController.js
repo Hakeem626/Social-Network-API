@@ -4,31 +4,22 @@ const { User, Thought } = require('../models');
 module.exports = {
   // Get all users
   getAllUsers(req, res) {
-    Student.find()
-      .then(async (students) => {
-        const studentObj = {
-          students,
-          headCount: await headCount(),
-        };
-        return res.json(studentObj);
+    User.find()
+      .then((users) => {
+         res.json(users);
       })
       .catch((err) => {
         console.log(err);
         return res.status(500).json(err);
       });
   },
-  // Get a single student
+  // Get a single user
   getUser(req, res) {
-    Student.findOne({ _id: req.params.studentId })
+    User.findOne({ _id: req.params.userId })
       .select('-__v')
-      .then(async (student) =>
-        !student
-          ? res.status(404).json({ message: 'No student with that ID' })
-          : res.json({
-              student,
-              grade: await grade(req.params.studentId),
-            })
-      )
+      .then((user) => {
+       res.json(user);
+  })
       .catch((err) => {
         console.log(err);
         return res.status(500).json(err);
@@ -36,14 +27,14 @@ module.exports = {
   },
   // create a new user
   createUser(req, res) {
-    Student.create(req.body)
-      .then((student) => res.json(student))
+    User.create(req.body)
+      .then((student) => res.json(user))
       .catch((err) => res.status(500).json(err));
   },
     // Update a user
     updateUser(req, res) {
-      Student.create(req.body)
-        .then((student) => res.json(student))
+      User.create(req.body)
+        .then((user) => res.json(student))
         .catch((err) => res.status(500).json(err));
     },
   // Delete a user and remove them from the course
