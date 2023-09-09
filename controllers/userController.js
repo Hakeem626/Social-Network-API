@@ -1,15 +1,9 @@
 const { ObjectId } = require('mongoose').Types;
 const { User, Thought } = require('../models');
 
-// Aggregate function to get the number of students overall
-const headCount = async () =>
-  Student.aggregate()
-    .count('studentCount')
-    .then((numberOfStudents) => numberOfStudents);
-
 module.exports = {
-  // Get all students
-  getStudents(req, res) {
+  // Get all users
+  getAllUsers(req, res) {
     Student.find()
       .then(async (students) => {
         const studentObj = {
@@ -24,7 +18,7 @@ module.exports = {
       });
   },
   // Get a single student
-  getSingleStudent(req, res) {
+  getUser(req, res) {
     Student.findOne({ _id: req.params.studentId })
       .select('-__v')
       .then(async (student) =>
@@ -40,14 +34,20 @@ module.exports = {
         return res.status(500).json(err);
       });
   },
-  // create a new student
-  createStudent(req, res) {
+  // create a new user
+  createUser(req, res) {
     Student.create(req.body)
       .then((student) => res.json(student))
       .catch((err) => res.status(500).json(err));
   },
-  // Delete a student and remove them from the course
-  deleteStudent(req, res) {
+    // Update a user
+    updateUser(req, res) {
+      Student.create(req.body)
+        .then((student) => res.json(student))
+        .catch((err) => res.status(500).json(err));
+    },
+  // Delete a user and remove them from the course
+  deleteUser(req, res) {
     Student.findOneAndRemove({ _id: req.params.studentId })
       .then((student) =>
         !student
@@ -71,8 +71,8 @@ module.exports = {
       });
   },
 
-  // Add an assignment to a student
-  addAssignment(req, res) {
+  // Add a friend
+  addFriend(req, res) {
     console.log('You are adding an assignment');
     console.log(req.body);
     Student.findOneAndUpdate(
@@ -89,8 +89,8 @@ module.exports = {
       )
       .catch((err) => res.status(500).json(err));
   },
-  // Remove assignment from a student
-  removeAssignment(req, res) {
+  // Remove friend
+  removeFriend(req, res) {
     Student.findOneAndUpdate(
       { _id: req.params.studentId },
       { $pull: { assignment: { assignmentId: req.params.assignmentId } } },
