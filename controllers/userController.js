@@ -28,7 +28,7 @@ module.exports = {
   // create a new user
   createUser(req, res) {
     User.create(req.body)
-      .then((student) => res.json(user))
+      .then((user) => res.json(user))
       .catch((err) => res.status(500).json(err));
   },
     // Update a user
@@ -57,18 +57,13 @@ module.exports = {
   },
   // Remove friend
   removeFriend(req, res) {
+    console.log('You are removing a friend');
     User.findOneAndUpdate(
-      { _id: req.params.studentId },
-      { $pull: { assignment: { assignmentId: req.params.assignmentId } } },
+      { _id: req.params.userId },
+      { $pull: { friends: req.params.friendId } },
       { runValidators: true, new: true }
     )
-      .then((student) =>
-        !student
-          ? res
-              .status(404)
-              .json({ message: 'No student found with that ID :(' })
-          : res.json(student)
-      )
-      .catch((err) => res.status(500).json(err));
+    .then((user) => res.json(user))
+    .catch((err) => res.status(500).json(err));
   },
 };
