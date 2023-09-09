@@ -33,52 +33,28 @@ module.exports = {
   },
     // Update a user
     updateUser(req, res) {
-      User.create(req.body)
-        .then((user) => res.json(student))
+      User.findOneAndUpdate({ _id: req.params.userId }, {$set: {username: req.body.username}}, {new: true})
+        .then((user) => res.json(user))
         .catch((err) => res.status(500).json(err));
     },
   // Delete a user and remove them from the course
   deleteUser(req, res) {
-    Student.findOneAndRemove({ _id: req.params.studentId })
-      .then((student) =>
-        !student
-          ? res.status(404).json({ message: 'No such student exists' })
-          : Course.findOneAndUpdate(
-              { students: req.params.studentId },
-              { $pull: { students: req.params.studentId } },
-              { new: true }
-            )
-      )
-      .then((course) =>
-        !course
-          ? res.status(404).json({
-              message: 'Student deleted, but no courses found',
-            })
-          : res.json({ message: 'Student successfully deleted' })
-      )
-      .catch((err) => {
-        console.log(err);
-        res.status(500).json(err);
-      });
+    User.findOneAndRemove({ _id: req.params.userId })
+      .then((user) => res.json(user))
+      .catch((err) => res.status(500).json(err));
   },
 
   // Add a friend
   addFriend(req, res) {
-    console.log('You are adding an assignment');
+    console.log('You are adding a friend');
     console.log(req.body);
     Student.findOneAndUpdate(
       { _id: req.params.studentId },
-      { $addToSet: { assignments: req.body } },
+      { $addToSet: { friends: req.params.friendId } },
       { runValidators: true, new: true }
     )
-      .then((student) =>
-        !student
-          ? res
-              .status(404)
-              .json({ message: 'No student found with that ID :(' })
-          : res.json(student)
-      )
-      .catch((err) => res.status(500).json(err));
+    .then((user) => res.json(user))
+    .catch((err) => res.status(500).json(err));
   },
   // Remove friend
   removeFriend(req, res) {
